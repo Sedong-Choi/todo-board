@@ -8,14 +8,14 @@ import { TodoCard } from "./TodoCard";
 
 
 
-export const TodoList = ({ todos, columnId }: { todos: Todo[]; columnId: string }) => {
+export const TodoList = ({ todos, boardId }: { todos: Todo[]; boardId: string }) => {
 
     const [items, setItems] = useState<Todo[]>(todos ?? []);
 
     // board 내부의 Todo의 DnD action 정의
     const handleTodoDragEnd = (result: DropResult) => {
         if (!result.destination) return;
-        if (result.source.droppableId !== columnId) return;
+        if (result.source.droppableId !== boardId) return;
 
         const updatedItems = reorder(items, result.source.index, result.destination.index);
         setItems(updatedItems);
@@ -23,7 +23,7 @@ export const TodoList = ({ todos, columnId }: { todos: Todo[]; columnId: string 
 
     return (
         <DragDropContext onDragEnd={handleTodoDragEnd}>
-            <Droppable droppableId={columnId} type="TODO-LIST">
+            <Droppable droppableId={boardId} type="TODO-LIST">
                 {(provided) => (
                     <div
                         ref={provided.innerRef}
