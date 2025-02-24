@@ -13,7 +13,7 @@ export const TodoList = ({ todos, boardId }: { todos: Todo[]; boardId: string })
                 <div
                     ref={provided.innerRef}
                     {...provided.droppableProps}
-                    className="flex flex-col h-[300px] min-w-[200px] bg-slate-500 border border-slate-400 rounded-lg gap-1 overflow-y-auto p-1"
+                    className="h-full min-w-[200px] bg-slate-500 border border-slate-400 rounded-lg gap-1 p-1"
                 >
                     {
                         todos.map((item, index) => (

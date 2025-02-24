@@ -27,10 +27,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col justify-center`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col `}
       >
         <HeroUIProvider>
-          <main className="flex-1">
+          <main className="">
             {children}
           </main>
         </HeroUIProvider>

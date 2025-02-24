@@ -30,7 +30,7 @@ export const Board = ({ title, index, todos }: { title: string; index: number; t
                     ref={provided.innerRef}
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
-                    className="flex-none bg-white p-4 rounded-lg w-[300px] text-black min-h-[400px] self-center"
+                    className="flex-none bg-white p-4 rounded-lg w-[300px] text-black  self-start"
                 >
                     <div className="flex flex-row justify-between items-center pb-4">
                         <h3>
