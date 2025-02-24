@@ -1,5 +1,5 @@
 'use client';
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { DragDropContext, DraggableLocation, Droppable, DropResult } from "@hello-pangea/dnd";
 import { Button, Input } from "@heroui/react";
 
@@ -13,16 +13,28 @@ import { useBoardStore } from "@/hooks/useBoardStore";
 export const KanbanBoard = () => {
 
     const [newBoardTitle, setNewBoardTitle] = useState('');
+
+    const [searchBoard, setSearchBoard] = useState('');
     // const isMobile = useIsMobile();
 
-    const { boardData, updateBoardData, boardOrder, setOrder, createBoard } = useBoardStore((state) => state);
+    const { boardData, updateBoardData, boardOrder, setOrder, createBoard, filteredBoard } = useBoardStore((state) => state);
 
     // localStorage에 저장된 data 차이가 생겼을때 order를 업데이트
     if (boardOrder.length !== Object.keys(boardData).length) {
         setOrder(Object.keys(boardData));
     }
 
+    const currentBoardData = useMemo(() => {
+        return searchBoard === '' ? boardData : filteredBoard(searchBoard);
+    }, [searchBoard, boardData, filteredBoard])
+
+    const currentOrderData = useMemo(() => {
+        return searchBoard === '' ? boardOrder : Object.keys(currentBoardData);
+    }, [currentBoardData]);
+
     const handleBoardDragEnd = (result: DropResult) => {
+        // 검색어 있으면 order 수정 방지
+        if (searchBoard !== '') return;
 
         if (!result.destination) return;
 
@@ -83,34 +95,48 @@ export const KanbanBoard = () => {
                     variant="solid"
                     className=""
                 >생성</Button>
-
             </div>
-            <div className="kanban-board-box overflow-x-auto">
+            <div className="new-board-input flex flex-row gap-3 py-4 items-center">
+                <Input
+                    isClearable
+                    label="보드 검색"
+                    type="text"
+                    value={searchBoard}
+                    onChange={(e) => setSearchBoard(e.target.value)}
+                    onClear={() => setSearchBoard('')}
+                />
+            </div>
+            <div className="kanban-board-box overflow-auto">
 
                 {
-                    boardOrder.length === 0 ?
-                        <BoardSkeleton />
+                    currentOrderData.length === 0 ?
+                        <div className="flex justify-center items-center h-96 text-gray-400 text-2xl">검색 결과가 없습니다.</div>
                         :
-                        <DragDropContext onDragEnd={handleBoardDragEnd}>
-                            <Droppable droppableId="board" type="BOARD" direction='horizontal'>
-                                {(provided) => (
-                                    <div
-                                        ref={provided.innerRef}
-                                        {...provided.droppableProps}
-                                        className={`flex flex-row gap-3`}
-                                    >
+                        boardOrder.length === 0 ?
+                            <BoardSkeleton />
+                            :
+                            <DragDropContext onDragEnd={handleBoardDragEnd}>
+                                <Droppable droppableId="board" type="BOARD" direction='horizontal'>
+                                    {(provided) => (
+                                        <div
+                                            ref={provided.innerRef}
+                                            {...provided.droppableProps}
+                                            className={`flex flex-row gap-3`}
+                                        >
 
-                                        {boardOrder.map((key, index) => (
-                                            <Board key={key} index={index} title={key} todos={boardData[key]} />
-                                        ))}
+                                            {currentOrderData.map((key, index) => (
+                                                <Board key={key} index={index} title={key} todos={currentBoardData[key]} />
+                                            ))}
 
-                                        <BoardSkeleton />
-                                        {provided.placeholder}
-                                    </div>
-                                )}
-                            </Droppable>
-                        </DragDropContext>
+                                            <BoardSkeleton />
+                                            {provided.placeholder}
+                                        </div>
+                                    )}
+                                </Droppable>
+                            </DragDropContext>
                 }
+
+
             </div>
         </div>
     );

@@ -19,13 +19,14 @@ type BoardStore = {
   updateBoardTitle: (originTitle: string, newTitle: string) => void,
   createBoard: (boardTitle?: string) => void,
   deleteBoard: (boardTitle: string) => void
-  createTodo: (boardTitle: string) => void
+  createTodo: (boardTitle: string) => void,
+  filteredBoard: (keywords: string) => BoardDataMap
 }
 
 
 export const useBoardStore = create<BoardStore>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       boardOrder: [],
       setOrder: (newOrder) => set({ boardOrder: newOrder }),
       boardData: {} as BoardDataMap,
@@ -93,6 +94,14 @@ export const useBoardStore = create<BoardStore>()(
             }
           }
         })
+      },
+      filteredBoard: (keywords) => {
+        const lowerKeywords = keywords.toLowerCase();
+        return Object.fromEntries(
+          Object.entries(get().boardData).filter(([key, value]) => {
+            return key.toLocaleLowerCase().includes(lowerKeywords) || value.some(todo => todo.content.toLocaleLowerCase().includes(lowerKeywords))
+          })
+        )
       }
     }),
     {
