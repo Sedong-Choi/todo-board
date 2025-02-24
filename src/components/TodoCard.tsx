@@ -10,14 +10,17 @@ import {
   DropdownTrigger,
   Input
 } from '@heroui/react'
-import { MenuIcon } from './MenuIcon'
 
-import { DraggableProvided } from '@hello-pangea/dnd'
 import {
   BoardDataMap,
   Todo,
   useBoardStore
 } from '@/hooks/useBoardStore'
+import { parseDateFormat } from '@/utils/dateFormat'
+
+import { MenuIcon } from './MenuIcon'
+import { DraggableProvided } from '@hello-pangea/dnd'
+
 
 
 export const TodoCard = ({ item, provided }: { item: Todo, provided: DraggableProvided }) => {
@@ -77,7 +80,11 @@ export const TodoCard = ({ item, provided }: { item: Todo, provided: DraggablePr
           className="bg-transparent border-none"
         />
       </CardHeader>
-      <CardFooter className="flex flex-row-reverse items-center gap-2 text-gray-700">
+      <CardFooter className="flex flex-row justify-between items-center gap-2 text-gray-700">
+        <div className="flex flex-col gap-1">
+          <span className="text-secondary-200 text-sm">생성일</span>
+          <span className="text-secondary-200 text-sm">{parseDateFormat(item.createdAt)}</span>
+        </div>
         <Dropdown>
           <DropdownTrigger >
             <Button isIconOnly size="sm" variant="ghost" color="primary" className="p-1 border-none">

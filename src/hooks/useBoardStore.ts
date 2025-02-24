@@ -9,7 +9,7 @@ export interface Todo {
   id: string,
   content: string,
   isDone: boolean,
-  // createdAt: string;
+  createdAt: string;
 }
 type BoardStore = {
   boardData: BoardDataMap,
@@ -82,7 +82,8 @@ export const useBoardStore = create<BoardStore>()(
           const newTodo = {
             id: Math.random().toString(36).substr(2, 9),
             content: "New Todo",
-            isDone: false
+            isDone: false,
+            createdAt: new Date().toISOString()
           }
           return {
             ...state,
