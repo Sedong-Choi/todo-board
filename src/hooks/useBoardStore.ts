@@ -5,7 +5,9 @@ import { BoardDataMap } from '@/utils/reorder'
 
 type BoardStore = {
   boardData: BoardDataMap,
-  updateBoardData: (newBoardData: BoardDataMap) => void
+  boardOrder: string[],
+  setOrder: (newOrder: string[]) => void,
+  updateBoardData: (newBoardData: BoardDataMap) => void,
   updateBoardTitle: (originTitle: string, newTitle: string) => void,
   createBoard: () => void,
   deleteBoard: (boardTitle: string) => void
@@ -16,6 +18,8 @@ type BoardStore = {
 export const useBoardStore = create<BoardStore>()(
   persist(
     (set) => ({
+      boardOrder: [],
+      setOrder: (newOrder) => set({ boardOrder: newOrder }),
       boardData: {
         '12341234': [
           { id: '4', content: 'item 4', isDone: false },
@@ -41,11 +45,11 @@ export const useBoardStore = create<BoardStore>()(
         }))
       },
       updateBoardTitle: (originTitle: string, newTitle: string) => {
-        if( newTitle === originTitle) return;
-        if( newTitle ==='') return ;
-        if( newTitle in useBoardStore.getState().boardData) {
-            alert('이미 존재하는 이름 입니다.');
-            return ;
+        if (newTitle === originTitle) return;
+        if (newTitle === '') return;
+        if (newTitle in useBoardStore.getState().boardData) {
+          alert('이미 존재하는 이름 입니다.');
+          return;
         }
         set((state) => {
           const updated = Object.fromEntries(
@@ -66,9 +70,11 @@ export const useBoardStore = create<BoardStore>()(
         set((state) => {
           const deleted: BoardDataMap = Object.fromEntries(
             Object.entries(state.boardData).filter(([key]) => key !== boardTitle));
+          const deletedOrder = state.boardOrder.filter((title) => title !== boardTitle);
           return {
             ...state,
-            boardData: deleted
+            boardData: deleted,
+            boardOrder: deletedOrder
           };
         })
       },
@@ -86,7 +92,7 @@ export const useBoardStore = create<BoardStore>()(
       }
     }), {
     name: 'todo-board-data-storage',
-    partialize: (state) => ({ boardData: state.boardData }),
+    partialize: (state) => ({ boardData: state.boardData, boardOrder: state.boardOrder }),
     onRehydrateStorage: (state) => {
       /* if (state?.boardData) {
         console.log("데이터 로드 완료", state.boardData);

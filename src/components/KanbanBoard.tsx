@@ -1,10 +1,11 @@
+'use client';
 import { DragDropContext, DraggableLocation, Droppable, DropResult } from "@hello-pangea/dnd";
 import { reorder, reorderTodoBetweenBoard } from "@/utils/reorder";
 
 import { Board } from "@/components/Board";
 import { BoardSkeleton } from "@/components/BoardSkeleton";
 import { useBoardStore } from "@/hooks/useBoardStore";
-import { useIsMobile } from "@/hooks/useIsMobile";
+// import { useIsMobile } from "@/hooks/useIsMobile";
 
 
 export interface Todo {
@@ -15,22 +16,18 @@ export interface Todo {
 
 export const KanbanBoard = () => {
 
+    // const isMobile = useIsMobile();
 
-    const isMobile = useIsMobile();
-    const { boardData, updateBoardData } = useBoardStore((state) => state);
-
-
-    const ordered = Object.keys(boardData);
-
+    const { boardData, updateBoardData, boardOrder, setOrder } = useBoardStore((state) => state);
+    console.log(boardData);
     const handleBoardDragEnd = (result: DropResult) => {
 
         if (!result.destination) return;
 
         // board order 변경
         if (result.type === "BOARD") {
-            // TODO : 보드 순서변경
-            
-            const reordered = reorder(ordered, result.source.index, result.destination.index);
+            const reordered = reorder(boardOrder, result.source.index, result.destination.index);
+            setOrder(reordered);
             return;
         }
 
@@ -64,22 +61,19 @@ export const KanbanBoard = () => {
 
 
     return (<DragDropContext onDragEnd={handleBoardDragEnd}>
-        <Droppable droppableId="board" type="BOARD" direction={isMobile ? 'vertical' : 'horizontal'}>
+        <Droppable droppableId="board" type="BOARD" direction='horizontal'>
             {(provided) => (
                 <div
                     ref={provided.innerRef}
                     {...provided.droppableProps}
-                    className={`flex p-4 gap-3 ${isMobile ? 'flex-col w-auto' : ' flex-row '}`}
+                    className={`flex flex-row p-4 gap-3`}
                 >
-                    {isMobile &&
-                        <BoardSkeleton />
-                    }
-                    {ordered.map((key, index) => (
+
+                    {boardOrder.map((key, index) => (
                         <Board key={key} index={index} title={key} todos={boardData[key]} />
                     ))}
-                    {!isMobile &&
-                        <BoardSkeleton />
-                    }
+
+                    <BoardSkeleton />
                     {provided.placeholder}
                 </div>
             )}
