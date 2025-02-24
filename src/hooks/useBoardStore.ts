@@ -1,3 +1,4 @@
+'use client';
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
@@ -20,7 +21,10 @@ type BoardStore = {
   createBoard: (boardTitle?: string) => void,
   deleteBoard: (boardTitle: string) => void
   createTodo: (boardTitle: string) => void,
-  filteredBoard: (keywords: string) => BoardDataMap
+  filteredBoard: (keywords: string) => BoardDataMap,
+  totalTodoCount: ()=> number,
+  totalDoneCount: ()=> number,
+  getTodoInfo: ()=> {totalTodoCount: number, totalDoneCount: number}
 }
 
 
@@ -102,6 +106,18 @@ export const useBoardStore = create<BoardStore>()(
             return key.toLocaleLowerCase().includes(lowerKeywords) || value.some(todo => todo.content.toLocaleLowerCase().includes(lowerKeywords))
           })
         )
+      },
+      totalTodoCount:()=>{
+        return Object.values(get().boardData).reduce((acc, cur) => acc + cur.length, 0)
+      },
+      totalDoneCount:()=>{
+        return Object.values(get().boardData).reduce((acc, cur) => acc + cur.filter(todo => todo.isDone).length, 0)
+      },
+      getTodoInfo :()=>{
+        return {
+          totalTodoCount: get().totalTodoCount(),
+          totalDoneCount: get().totalDoneCount()
+        }
       }
     }),
     {
