@@ -1,15 +1,23 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
-import { BoardDataMap } from '@/utils/reorder'
 
+export interface BoardDataMap {
+  [key: string]: Todo[];
+}
+export interface Todo {
+  id: string,
+  content: string,
+  isDone: boolean,
+  // createdAt: string;
+}
 type BoardStore = {
   boardData: BoardDataMap,
   boardOrder: string[],
   setOrder: (newOrder: string[]) => void,
   updateBoardData: (newBoardData: BoardDataMap) => void,
   updateBoardTitle: (originTitle: string, newTitle: string) => void,
-  createBoard: (boardTitle?:string) => void,
+  createBoard: (boardTitle?: string) => void,
   deleteBoard: (boardTitle: string) => void
   createTodo: (boardTitle: string) => void
 }
@@ -71,7 +79,11 @@ export const useBoardStore = create<BoardStore>()(
       },
       createTodo: (boardId: string) => {
         set((state) => {
-          const newTodo = { id: Math.random().toString(36).substr(2, 9), content: "New Todo", isDone: false }
+          const newTodo = {
+            id: Math.random().toString(36).substr(2, 9),
+            content: "New Todo",
+            isDone: false
+          }
           return {
             ...state,
             boardData: {

@@ -1,7 +1,6 @@
-import { useBoardStore } from "@/hooks/useBoardStore";
-import { Todo } from "./KanbanBoard";
-import { TodoListPlaceholder } from "./TodoListPlaceholder";
 import { Button } from "@heroui/react";
+
+import { useBoardStore } from "@/hooks/useBoardStore";
 
 // 보드 컴포넌트
 export const BoardSkeleton = () => {

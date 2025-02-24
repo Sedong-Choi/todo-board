@@ -1,10 +1,17 @@
+import { useState } from "react";
 import { Draggable } from "@hello-pangea/dnd";
 
-import { TodoList } from "./TodoList";
-import { Todo } from "./KanbanBoard";
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Input } from "@heroui/react";
-import { useBoardStore } from "@/hooks/useBoardStore";
-import { useRef, useState } from "react";
+import {
+    Button,
+    Dropdown,
+    DropdownItem,
+    DropdownMenu,
+    DropdownTrigger,
+    Input
+} from "@heroui/react";
+
+import { Todo, useBoardStore } from "@/hooks/useBoardStore";
+import { TodoList } from "@/components/TodoList";
 import { MenuIcon } from "./MenuIcon";
 
 // 보드 컴포넌트

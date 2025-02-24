@@ -1,10 +1,24 @@
-import { Button, Card, CardBody, CardFooter, CardHeader, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Input } from '@heroui/react'
-import React, { useCallback, useState } from 'react'
-import { Todo } from './KanbanBoard'
-import { DraggableProvided } from '@hello-pangea/dnd'
-import { useBoardStore } from '@/hooks/useBoardStore'
-import { BoardDataMap } from '@/utils/reorder'
+import { useCallback, useState } from 'react'
+import {
+  Button,
+  Card,
+  CardFooter,
+  CardHeader,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+  Input
+} from '@heroui/react'
 import { MenuIcon } from './MenuIcon'
+
+import { DraggableProvided } from '@hello-pangea/dnd'
+import {
+  BoardDataMap,
+  Todo,
+  useBoardStore
+} from '@/hooks/useBoardStore'
+
 
 export const TodoCard = ({ item, provided }: { item: Todo, provided: DraggableProvided }) => {
 

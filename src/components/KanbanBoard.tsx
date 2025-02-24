@@ -10,12 +10,6 @@ import { useBoardStore } from "@/hooks/useBoardStore";
 // import { useIsMobile } from "@/hooks/useIsMobile";
 
 
-export interface Todo {
-    id: string,
-    content: string,
-    isDone: boolean
-}
-
 export const KanbanBoard = () => {
 
     const [newBoardTitle, setNewBoardTitle] = useState('');
@@ -71,7 +65,7 @@ export const KanbanBoard = () => {
 
     return (
         <div className="Kanban-board-container">
-            <div className="new-board-input flex flex-row gap-3 p-4 items-center">
+            <div className="new-board-input flex flex-row gap-3 py-4 items-center">
                 <Input
                     label="보드 생성"
                     type="text"
@@ -103,7 +97,7 @@ export const KanbanBoard = () => {
                                     <div
                                         ref={provided.innerRef}
                                         {...provided.droppableProps}
-                                        className={`flex flex-row p-4 gap-3`}
+                                        className={`flex flex-row gap-3`}
                                     >
 
                                         {boardOrder.map((key, index) => (

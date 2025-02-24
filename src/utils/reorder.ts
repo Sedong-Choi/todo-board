@@ -1,4 +1,4 @@
-import { Todo } from "@/components/KanbanBoard";
+import { BoardDataMap, Todo } from "@/hooks/useBoardStore";
 import { DraggableLocation } from "@hello-pangea/dnd";
 
 // 단순 순서 변경 함수
@@ -14,9 +14,6 @@ export function reorder<TItem>(
     return result;
 }
 
-export interface BoardDataMap {
-    [key: string]: Todo[];
-}
 interface ReorderTodoBetweenBoardProps {
     boardDataMap: BoardDataMap;
     source: DraggableLocation;

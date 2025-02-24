@@ -1,8 +1,8 @@
 import { Draggable, Droppable } from "@hello-pangea/dnd";
 
-import { Todo } from "./KanbanBoard";
-import { TodoCard } from "./TodoCard";
-import { useBoardStore } from "@/hooks/useBoardStore";
+
+import { TodoCard } from "@/components/TodoCard";
+import { Todo, useBoardStore } from "@/hooks/useBoardStore";
 
 
 export const TodoList = ({ todos, boardId }: { todos: Todo[]; boardId: string }) => {
