@@ -1,7 +1,9 @@
 'use client';
+import { useCallback, useState } from "react";
 import { DragDropContext, DraggableLocation, Droppable, DropResult } from "@hello-pangea/dnd";
-import { reorder, reorderTodoBetweenBoard } from "@/utils/reorder";
+import { Button, Input } from "@heroui/react";
 
+import { reorder, reorderTodoBetweenBoard } from "@/utils/reorder";
 import { Board } from "@/components/Board";
 import { BoardSkeleton } from "@/components/BoardSkeleton";
 import { useBoardStore } from "@/hooks/useBoardStore";
@@ -16,10 +18,12 @@ export interface Todo {
 
 export const KanbanBoard = () => {
 
+    const [newBoardTitle, setNewBoardTitle] = useState('');
     // const isMobile = useIsMobile();
 
-    const { boardData, updateBoardData, boardOrder, setOrder } = useBoardStore((state) => state);
+    const { boardData, updateBoardData, boardOrder, setOrder, createBoard } = useBoardStore((state) => state);
 
+    // localStorage에 저장된 data 차이가 생겼을때 order를 업데이트
     if (boardOrder.length !== Object.keys(boardData).length) {
         setOrder(Object.keys(boardData));
     }
@@ -46,7 +50,6 @@ export const KanbanBoard = () => {
             return;
         }
 
-
         // 다른 보드간 이동 처리 및 동일 보드간 이동처리
         const data = reorderTodoBetweenBoard({
             boardDataMap: boardData,
@@ -57,31 +60,64 @@ export const KanbanBoard = () => {
         updateBoardData(data.boardDataMap)
     };
 
-    if (Object.keys(boardData).length === 0) {
+    const handleCreateBoard = useCallback((title: string) => {
+        if (title === '') {
+            alert('보드 이름을 입력해주세요.');
+            return;
+        }
+        createBoard(title)
+        setNewBoardTitle('');
+    }, []);
 
-        return <BoardSkeleton />
+    return (
+        <div className="Kanban-board-container">
+            <div className="new-board-input flex flex-row gap-3 p-4 items-center">
+                <Input
+                    label="보드 생성"
+                    type="text"
+                    value={newBoardTitle}
+                    onChange={(e) => setNewBoardTitle(e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                            handleCreateBoard(newBoardTitle);
+                        }
+                    }}
+                />
+                <Button
+                    color="success"
+                    onPress={() => handleCreateBoard(newBoardTitle)}
+                    variant="solid"
+                    className=""
+                >생성</Button>
 
-    }
+            </div>
+            <div className="kanban-board-box overflow-x-auto">
 
+                {
+                    boardOrder.length === 0 ?
+                        <BoardSkeleton />
+                        :
+                        <DragDropContext onDragEnd={handleBoardDragEnd}>
+                            <Droppable droppableId="board" type="BOARD" direction='horizontal'>
+                                {(provided) => (
+                                    <div
+                                        ref={provided.innerRef}
+                                        {...provided.droppableProps}
+                                        className={`flex flex-row p-4 gap-3`}
+                                    >
 
-    return (<DragDropContext onDragEnd={handleBoardDragEnd}>
-        <Droppable droppableId="board" type="BOARD" direction='horizontal'>
-            {(provided) => (
-                <div
-                    ref={provided.innerRef}
-                    {...provided.droppableProps}
-                    className={`flex flex-row p-4 gap-3`}
-                >
+                                        {boardOrder.map((key, index) => (
+                                            <Board key={key} index={index} title={key} todos={boardData[key]} />
+                                        ))}
 
-                    {boardOrder.map((key, index) => (
-                        <Board key={key} index={index} title={key} todos={boardData[key]} />
-                    ))}
-
-                    <BoardSkeleton />
-                    {provided.placeholder}
-                </div>
-            )}
-        </Droppable>
-    </DragDropContext>
+                                        <BoardSkeleton />
+                                        {provided.placeholder}
+                                    </div>
+                                )}
+                            </Droppable>
+                        </DragDropContext>
+                }
+            </div>
+        </div>
     );
 };
