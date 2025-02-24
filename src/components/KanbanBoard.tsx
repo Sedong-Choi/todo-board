@@ -19,7 +19,11 @@ export const KanbanBoard = () => {
     // const isMobile = useIsMobile();
 
     const { boardData, updateBoardData, boardOrder, setOrder } = useBoardStore((state) => state);
-    console.log(boardData);
+
+    if (boardOrder.length !== Object.keys(boardData).length) {
+        setOrder(Object.keys(boardData));
+    }
+
     const handleBoardDragEnd = (result: DropResult) => {
 
         if (!result.destination) return;

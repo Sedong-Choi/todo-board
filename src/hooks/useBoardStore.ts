@@ -20,28 +20,19 @@ export const useBoardStore = create<BoardStore>()(
     (set) => ({
       boardOrder: [],
       setOrder: (newOrder) => set({ boardOrder: newOrder }),
-      boardData: {
-        '12341234': [
-          { id: '4', content: 'item 4', isDone: false },
-          { id: '9', content: 'item 9', isDone: false },
-          { id: '10', content: 'item 10', isDone: false }
-        ],
-        "test data": [
-          { id: '1', content: 'item 1', isDone: false },
-          { id: '3', content: 'item 3', isDone: false },
-          { id: '11', content: 'item 11', isDone: false }
-
-        ]
-      } as BoardDataMap,
+      boardData: {} as BoardDataMap,
       updateBoardData: (newBoardData: BoardDataMap) => {
         set({ boardData: newBoardData })
       },
       createBoard: () => {
+        const boardTitle = `보드 - ${Math.random().toString(36).substr(2, 3)}`;
         set((state) => ({
-          ...state, boardData: {
+          ...state,
+          boardData: {
             ...state.boardData,
-            [`보드 - ${Math.random().toString(36).substr(2, 3)}`]: []
-          }
+            [boardTitle]: []
+          },
+          boardOrder: [boardTitle, ...state.boardOrder],
         }))
       },
       updateBoardTitle: (originTitle: string, newTitle: string) => {
@@ -90,17 +81,22 @@ export const useBoardStore = create<BoardStore>()(
           }
         })
       }
-    }), {
-    name: 'todo-board-data-storage',
-    partialize: (state) => ({ boardData: state.boardData, boardOrder: state.boardOrder }),
-    onRehydrateStorage: (state) => {
-      /* if (state?.boardData) {
-        console.log("데이터 로드 완료", state.boardData);
-      } else {
-        console.log("로컬 스토리지에 데이터가 없습니다.");
-      } */
-    },
+    }),
+    {
+      name: 'todo-board-data-storage',
+      partialize: (state) => ({ boardData: state.boardData, boardOrder: state.boardOrder }),
+      onRehydrateStorage: (state) => {
 
-  },
+        if (state?.boardData) {
+          console.log("데이터 로드 완료", state.boardData);
+        } else {
+          console.log("로컬 스토리지에 데이터가 없습니다.");
+        }
+
+        if (Object.keys(state.boardData).length !== state.boardOrder.length) {
+          console.log('데이터가 정확하지 않습니다.')
+        }
+      },
+    },
   ),
 )
