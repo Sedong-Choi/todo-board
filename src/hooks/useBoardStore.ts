@@ -9,7 +9,7 @@ type BoardStore = {
   setOrder: (newOrder: string[]) => void,
   updateBoardData: (newBoardData: BoardDataMap) => void,
   updateBoardTitle: (originTitle: string, newTitle: string) => void,
-  createBoard: () => void,
+  createBoard: (boardTitle?:string) => void,
   deleteBoard: (boardTitle: string) => void
   createTodo: (boardTitle: string) => void
 }
@@ -24,15 +24,15 @@ export const useBoardStore = create<BoardStore>()(
       updateBoardData: (newBoardData: BoardDataMap) => {
         set({ boardData: newBoardData })
       },
-      createBoard: () => {
-        const boardTitle = `보드 - ${Math.random().toString(36).substr(2, 3)}`;
+      createBoard: (boardTitle) => {
+        const title = boardTitle ?? `보드 - ${Math.random().toString(36).substr(2, 3)}`;
         set((state) => ({
           ...state,
           boardData: {
             ...state.boardData,
-            [boardTitle]: []
+            [title]: []
           },
-          boardOrder: [boardTitle, ...state.boardOrder],
+          boardOrder: [title, ...state.boardOrder],
         }))
       },
       updateBoardTitle: (originTitle: string, newTitle: string) => {
