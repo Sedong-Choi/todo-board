@@ -7,8 +7,7 @@ export const BoardSkeleton = () => {
     const { createBoard } = useBoardStore((state) => state);
     return (
         <div
-        className="flex-none flex flex-col bg-white rounded-lg w-[300px] text-black justify-center items-center min-h-[400px] h-full self-center"
-            // className="flex-none bg-white rounded-lg w-[300px] text-black min-h-[400px] self-center h-full"
+            className="flex-none flex flex-col bg-white rounded-lg w-[300px] text-black justify-center items-center min-h-[400px] h-full self-center"
         >
             <Button
                 onPress={() => createBoard()}
